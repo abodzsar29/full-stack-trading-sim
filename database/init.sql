@@ -1,4 +1,4 @@
--- Create database schema
+-- database schema
 
 CREATE TABLE IF NOT EXISTS stocks (
   id SERIAL PRIMARY KEY,

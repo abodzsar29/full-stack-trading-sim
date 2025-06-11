@@ -181,12 +181,14 @@ const App: React.FC = () => {
                 <div key={holding.symbol} className="flex justify-between items-center p-3 bg-gray-50 rounded">
                   <div>
                     <h3 className="font-semibold">{holding.symbol}</h3>
-                    <p className="text-sm text-gray-600">{holding.quantity} shares @ ${holding.average_price.toFixed(2)}</p>
+                    <p className="text-sm text-gray-600">
+                      {holding.quantity || 0} shares @ ${(holding.average_price || 0).toFixed(2)}
+                    </p>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold">${holding.current_value.toFixed(2)}</p>
-                    <p className={`text-sm ${holding.unrealized_pnl >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                      {holding.unrealized_pnl >= 0 ? '+' : ''}${holding.unrealized_pnl.toFixed(2)}
+                    <p className="font-semibold">${(holding.current_value || 0).toFixed(2)}</p>
+                    <p className={`text-sm ${(holding.unrealized_pnl || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                      {(holding.unrealized_pnl || 0) >= 0 ? '+' : ''}${(holding.unrealized_pnl || 0).toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -212,12 +214,12 @@ const App: React.FC = () => {
           >
             <div className="flex justify-between items-start mb-2">
               <h3 className="font-bold text-lg">{stock.symbol}</h3>
-              <p className="font-semibold text-lg">${stock.price?.toFixed(2)}</p>
+              <p className="font-semibold text-lg">${(stock.price || 0).toFixed(2)}</p>
             </div>
             <p className="text-sm text-gray-600 mb-2 line-clamp-2">{stock.name}</p>
             <div className="flex justify-end">
-              <p className={`text-sm font-medium ${stock.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {stock.change >= 0 ? '+' : ''}{stock.change?.toFixed(2)} ({stock.change_percent?.toFixed(2)}%)
+              <p className={`text-sm font-medium ${(stock.change || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                {(stock.change || 0) >= 0 ? '+' : ''}{(stock.change || 0).toFixed(2)} ({(stock.change_percent || 0).toFixed(2)}%)
               </p>
             </div>
           </div>
@@ -267,9 +269,9 @@ const App: React.FC = () => {
             <div className="bg-white p-4 rounded-lg shadow">
               <h2 className="font-semibold mb-2">{selectedStock.name}</h2>
               <div className="flex justify-between items-center">
-                <span className="text-2xl font-bold">${selectedStock.price?.toFixed(2)}</span>
-                <span className={`text-lg ${selectedStock.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                  {selectedStock.change >= 0 ? '+' : ''}{selectedStock.change?.toFixed(2)} ({selectedStock.change_percent?.toFixed(2)}%)
+                <span className="text-2xl font-bold">${(selectedStock.price || 0).toFixed(2)}</span>
+                <span className={`text-lg ${(selectedStock.change || 0) >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  {(selectedStock.change || 0) >= 0 ? '+' : ''}{(selectedStock.change || 0).toFixed(2)} ({(selectedStock.change_percent || 0).toFixed(2)}%)
                 </span>
               </div>
             </div>
@@ -308,10 +310,10 @@ const App: React.FC = () => {
             {holding && (
               <div className="bg-gray-50 p-4 rounded-lg">
                 <h3 className="font-semibold mb-2">Your Position</h3>
-                <p>Shares: {holding.quantity}</p>
-                <p>Avg Cost: ${holding.average_price?.toFixed(2)}</p>
-                <p className={holding.unrealized_pnl >= 0 ? 'text-green-600' : 'text-red-600'}>
-                  P&L: {holding.unrealized_pnl >= 0 ? '+' : ''}${holding.unrealized_pnl?.toFixed(2)}
+                <p>Shares: {holding.quantity || 0}</p>
+                <p>Avg Cost: ${(holding.average_price || 0).toFixed(2)}</p>
+                <p className={(holding.unrealized_pnl || 0) >= 0 ? 'text-green-600' : 'text-red-600'}>
+                  P&L: {(holding.unrealized_pnl || 0) >= 0 ? '+' : ''}${(holding.unrealized_pnl || 0).toFixed(2)}
                 </p>
               </div>
             )}
@@ -335,14 +337,14 @@ const App: React.FC = () => {
                   onClick={() => handleTrade('BUY', tradeQuantity)}
                   className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
                 >
-                  Buy ${(selectedStock.price * tradeQuantity).toFixed(2)}
+                  Buy ${((selectedStock.price || 0) * tradeQuantity).toFixed(2)}
                 </button>
                 <button
                   onClick={() => handleTrade('SELL', tradeQuantity)}
-                  disabled={!holding || holding.quantity < tradeQuantity}
+                  disabled={!holding || (holding.quantity || 0) < tradeQuantity}
                   className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 disabled:bg-gray-400"
                 >
-                  Sell ${(selectedStock.price * tradeQuantity).toFixed(2)}
+                  Sell ${((selectedStock.price || 0) * tradeQuantity).toFixed(2)}
                 </button>
               </div>
             </div>
@@ -370,11 +372,11 @@ const App: React.FC = () => {
                   {transaction.type} {transaction.symbol}
                 </h3>
                 <p className={`font-semibold ${transaction.type === 'BUY' ? 'text-red-600' : 'text-green-600'}`}>
-                  {transaction.type === 'BUY' ? '-' : '+'}${transaction.total?.toFixed(2)}
+                  {transaction.type === 'BUY' ? '-' : '+'}${(transaction.total || 0).toFixed(2)}
                 </p>
               </div>
               <p className="text-sm text-gray-600">
-                {transaction.quantity} shares @ ${transaction.price?.toFixed(2)}
+                {transaction.quantity || 0} shares @ ${(transaction.price || 0).toFixed(2)}
               </p>
               <p className="text-xs text-gray-500">
                 {new Date(transaction.timestamp).toLocaleString()}

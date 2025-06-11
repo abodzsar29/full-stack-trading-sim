@@ -1,0 +1,15 @@
+# .env files
+backend/.env
+frontend/.env.local
+
+#Node modules
+node_modules/
+
+#Installed package versions
+backend/package-lock.json
+frontend/package-lock.json
+
+#.next
+frontend/.next/
+
+

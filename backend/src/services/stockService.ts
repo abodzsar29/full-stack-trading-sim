@@ -21,7 +21,6 @@ export class StockService {
 
   async updateStockPrices(): Promise<void> {
     try {
-      // Single API call for all 100 stocks
       await this.updateBatchPrices(STOCKS);
       console.log('Stock prices updated successfully');
     } catch (error) {
@@ -33,11 +32,10 @@ export class StockService {
     try {
       const stockSymbols = symbols.join(',');
       
-      // Single API call with all 100 stock symbols
       const response = await axios.get(
         `https://financialmodelingprep.com/api/v3/quote/${stockSymbols}?apikey=${this.FMP_API_KEY}`,
         {
-          timeout: 15000, // Increased timeout for larger request
+          timeout: 15000,
           headers: {
             'User-Agent': 'TradingSimulator/1.0'
           }
@@ -50,7 +48,6 @@ export class StockService {
 
       const stockData = response.data;
       
-      // This loop now processes all 100 stocks instead of 10
       for (const stock of stockData) {
         if (!stock.symbol || typeof stock.price !== 'number') {
           console.warn(`Invalid stock data received for ${stock.symbol}`);
@@ -202,3 +199,5 @@ export class StockService {
     };
   }
 }
+
+//
