@@ -113,7 +113,7 @@ export class StockService {
     };
   }
 
-  async getHistoricalData(symbol: string, timeframe: string = '2year'): Promise<HistoricalData[]> {
+async getHistoricalData(symbol: string, timeframe: string = '2year'): Promise<HistoricalData[]> {
     try {
       const { startDate, endDate } = this.getDateRange(timeframe);
       
@@ -121,15 +121,16 @@ export class StockService {
       const response = await axios.get(
         `https://api.polygon.io/v2/aggs/ticker/${symbol}/range/1/day/${startDate}/${endDate}?adjusted=true&sort=asc&limit=5000&apiKey=${this.POLYGON_API_KEY}`,
         {
-          timeout: 15000, // 15 second timeout
+          timeout: 15000,
           headers: {
             'User-Agent': 'TradingSimulator/1.0'
           }
         }
       );
 
-      if (!response.data || response.data.status !== 'OK') {
-        throw new Error(`Polygon API error: ${response.data?.status || 'Unknown error'}`);
+      if (!response.data || !['OK', 'DELAYED'].includes(response.data.status)) {
+        console.warn(`Polygon API returned status: ${response.data?.status || 'Unknown'} for ${symbol}`);
+        return [];
       }
 
       if (!response.data.results || !Array.isArray(response.data.results)) {
@@ -161,7 +162,7 @@ export class StockService {
         console.error('Network error fetching historical data:', error);
       }
       
-      // Return empty array instead of throwing to prevent app crashes
+      // Return empty array - frontend will show "No chart data available"
       return [];
     }
   }
@@ -187,9 +188,9 @@ export class StockService {
         startDate.setFullYear(endDate.getFullYear() - 1);
         break;
       case 'ytd':
-        startDate.setMonth(0, 1); // January 1st of current year
+        startDate.setMonth(0, 1);
         break;
-      default: // 2year
+      default:
         startDate.setFullYear(endDate.getFullYear() - 2);
     }
 
@@ -200,4 +201,3 @@ export class StockService {
   }
 }
 
-//
